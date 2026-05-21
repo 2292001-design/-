@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=Noto+Serif+KR:wght@300;600;900&display=swap');
+
+@theme {
+  --font-sans: "Space Grotesk", "Noto Serif KR", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-serif: "Noto Serif KR", serif;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; filter: brightness(1); }
+  20%, 24%, 55% { opacity: 0.8; filter: brightness(0.85); }
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3)); }
+  50% { transform: scale(1.02); filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6)); }
+}
+
+@keyframes ghost-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+.scanline-overlay {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 45;
+  pointer-events: none;
+}
+
+.scanline-bar {
+  animation: scanline 8s linear infinite;
+}
+
+.crt-flicker {
+  animation: flicker 0.25s infinite;
+}
+
+.pulse-glowing {
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+.ghost-moving {
+  animation: ghost-float 4s ease-in-out infinite;
+}
+
+.glitch-text {
+  text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+               -0.025em -0.05rem 0 rgba(0, 255, 0, 0.75),
+               0.025em 0.05rem 0 rgba(0, 0, 255, 0.75);
+}
