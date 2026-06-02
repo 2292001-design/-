@@ -52,27 +52,8 @@ export default function App() {
   const [cctvTime, setCctvTime] = useState('2026-10-24 03:31:31');
   const [glitchActive, setGlitchActive] = useState(false);
 
-  // Sync state view on mount or hash change to handle `/game` or `#/game` routes
-  useEffect(() => {
-    const handleUrlSync = () => {
-      const h = window.location.hash;
-      const p = window.location.pathname;
-      if (h === '#/game' || p === '/game') {
-        setView('MAIN');
-        setCurrentScene('game');
-        setState(prev => ({
-          ...prev,
-          selectedCharacterId: prev.selectedCharacterId || CHARACTERS[0].id
-        }));
-      } else if (h === '' && p === '/') {
-        setView('INTRO');
-        setCurrentScene('intro');
-      }
-    };
-    handleUrlSync();
-    window.addEventListener('hashchange', handleUrlSync);
-    return () => window.removeEventListener('hashchange', handleUrlSync);
-  }, []);
+
+
 
   const getDirectionStyle = (dir: Direction) => {
     const baseGradient = 'linear-gradient(to bottom, rgba(10, 10, 15, 0.45), rgba(10, 10, 15, 0.82))';
@@ -240,10 +221,10 @@ export default function App() {
         <button
           onClick={() => {
             if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
+              window.location.hash = '';
               setView('INTRO');
               setCurrentScene('intro');
               setVideoEnded(false);
-              window.location.hash = '';
             }
           }}
           className="px-4 py-2 bg-zinc-900 hover:bg-red-950/50 border border-zinc-800 hover:border-red-900/50 rounded-xl text-xs text-zinc-400 hover:text-red-400 font-bold transition-all"
@@ -643,7 +624,6 @@ export default function App() {
                   }));
                   setView('MAIN');
                   setCurrentScene('game');
-                  window.location.hash = '#/game';
                 }}
                 className="px-12 py-5 bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-600 hover:to-indigo-600 hover:scale-105 text-white font-black tracking-widest rounded-2xl shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all text-sm pulse-glowing cursor-pointer"
               >
