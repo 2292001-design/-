@@ -501,7 +501,7 @@ export default function App() {
   if (view === 'INTRO') {
     return (
       <div 
-        className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden scanline-overlay bg-zinc-950"
+        className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-y-auto scanline-overlay bg-zinc-950"
       >
 
         {/* ── 인트로 영상 재생 (videoEnded === false 일 때) ── */}
