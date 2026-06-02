@@ -545,7 +545,7 @@ export default function App() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-4xl w-full relative z-20 space-y-12 text-center py-12"
+            className="max-w-4xl w-full relative z-[100] space-y-12 text-center py-12"
           >
             {/* Subtle upper metadata */}
             <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-indigo-950/50 border border-indigo-800/30 rounded-full text-[10px] font-black tracking-[0.4em] text-indigo-400 crt-flicker">
