@@ -470,27 +470,55 @@ export default function MainRoomScene({
 
               <div className="space-y-3">
                 <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono text-center mb-1">DECIPHER CORE CONSOLE</div>
-                <input 
-                  autoFocus
-                  type="text" 
-                  value={input}
+               {alreadySolved ? (
+
+  <div className="w-full bg-green-950/30 border border-green-800 rounded-2xl p-5 text-center text-green-300">
+    이미 해결한 단서입니다.
+  </div>
+
+) : (
+
+  <input
+    autoFocus
+    type="text"
+    value={input}
+    onChange={(e) => setInput(e.target.value)}
+    onKeyDown={(e) => e.key === 'Enter' && onSolve(input)}
+    placeholder="정답 입력"
+    className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-white text-center outline-none focus:border-indigo-500"
+  />
+
+)}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && onSolve(input)}
                   placeholder="예: 코드 입력..."
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-white text-center outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-mono tracking-wide"
                 />
-                <div className="grid grid-cols-2 gap-3">
-                  <button 
-                    onClick={() => { setState(prev => ({ ...prev, inspectingObject: null })); setInput(''); }}
-                    className="py-4 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 font-bold rounded-2xl transition-all cursor-pointer"
-                  >
-                    중단하기
-                  </button>
-                  <button 
-                    onClick={() => onSolve(input)}
-                    className="py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white font-black rounded-2xl transition-all shadow-lg active:scale-95 cursor-pointer"
-                  >
-                    암호 전송
+              {!alreadySolved && (
+  <div className="grid grid-cols-2 gap-3">
+
+    <button
+      onClick={() => {
+        setState(prev => ({
+          ...prev,
+          inspectingObject: null
+        }));
+        setInput('');
+      }}
+      className="py-4 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 rounded-2xl"
+    >
+      중단하기
+    </button>
+
+    <button
+      onClick={() => onSolve(input)}
+      className="py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black rounded-2xl"
+    >
+      암호 전송
+    </button>
+
+  </div>
+)}
                   </button>
                 </div>
               </div>
