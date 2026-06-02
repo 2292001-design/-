@@ -33,7 +33,7 @@ import MainRoomScene from './components/MainRoomScene';
 export default function App() {
   const [view, setView] = useState<View>('INTRO');
   const [currentScene, setCurrentScene] = useState<'intro' | 'game'>('intro');
-  const [videoEnded, setVideoEnded] = useState(true); // 비디오 없이 바로 인트로 화면 표시
+  const [videoEnded, setVideoEnded] = useState(true); // 영상 없을 때도 타이틀 바로 표시
   const [inspectingCharacter, setInspectingCharacter] = useState<Character | null>(null);
   const [state, setState] = useState<GameState>({
     currentStageIdx: 0,
@@ -242,6 +242,7 @@ export default function App() {
             if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
               setView('INTRO');
               setCurrentScene('intro');
+              setVideoEnded(false);
               window.location.hash = '';
             }
           }}
@@ -521,6 +522,28 @@ export default function App() {
       <div 
         className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden scanline-overlay bg-zinc-950"
       >
+
+        {/* ── 인트로 영상 재생 (videoEnded === false 일 때) ── */}
+        {!videoEnded && (
+          <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+            <video
+              autoPlay
+              muted={false}
+              playsInline
+              onEnded={() => setVideoEnded(true)}
+              className="w-full h-full object-cover"
+            >
+              <source src="/intro.mp4" type="video/mp4" />
+            </video>
+            {/* 건너뛰기 버튼 */}
+            <button
+              onClick={() => setVideoEnded(true)}
+              className="absolute bottom-10 right-10 px-5 py-2.5 bg-black/70 hover:bg-black border border-white/20 hover:border-white/50 rounded-full text-xs font-black text-zinc-300 hover:text-white transition-all cursor-pointer z-10 tracking-widest"
+            >
+              건너뛰기 ▶▶
+            </button>
+          </div>
+        )}
         
         {/* Atmospheric Background Image */}
         <div
@@ -776,4 +799,3 @@ function getSkillHint(stageIdx: number, charId: string) {
   }
   return "팀원을 하단 슬롯에서 교체하면 전용 조사 스킬을 발동할 수 있습니다.";
 }
-
