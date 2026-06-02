@@ -32,7 +32,7 @@ import MainRoomScene from './components/MainRoomScene';
 
 export default function App() {
   const [view, setView] = useState<View>('INTRO');
-  
+  const [currentScene, setCurrentScene] = useState<'intro' | 'game'>('intro');
   const [videoEnded, setVideoEnded] = useState(true);
   const [inspectingCharacter, setInspectingCharacter] = useState<Character | null>(null);
   const [state, setState] = useState<GameState>({
@@ -51,7 +51,6 @@ export default function App() {
   const [showSkillHint, setShowSkillHint] = useState(false);
   const [cctvTime, setCctvTime] = useState('2026-10-24 03:31:31');
   const [glitchActive, setGlitchActive] = useState(false);
-
 
 
 
@@ -221,10 +220,9 @@ export default function App() {
         <button
           onClick={() => {
             if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
-              window.location.hash = '';
               setView('INTRO');
-
-              setVideoEnded(false);
+              setCurrentScene('intro');
+              setVideoEnded(true);
             }
           }}
           className="px-4 py-2 bg-zinc-900 hover:bg-red-950/50 border border-zinc-800 hover:border-red-900/50 rounded-xl text-xs text-zinc-400 hover:text-red-400 font-bold transition-all"
@@ -498,56 +496,57 @@ export default function App() {
   // --- RENDERING VIEWS ---
 
   // Intro Cinematic Screen
-  if (view === 'INTRO') {
-    // 영상 재생 중이면 영상 화면만 표시
-    if (!videoEnded) {
-      return (
-        <div className="fixed inset-0 bg-black flex items-center justify-center">
-          <video
-            autoPlay
-            playsInline
-            onEnded={() => setVideoEnded(true)}
-            className="w-full h-full object-cover"
-          >
-            <source src="/intro.mp4" type="video/mp4" />
-          </video>
-          <button
-            onClick={() => setVideoEnded(true)}
-            className="absolute bottom-10 right-10 px-5 py-2.5 bg-black/70 hover:bg-black border border-white/20 hover:border-white/50 rounded-full text-xs font-black text-zinc-300 hover:text-white transition-all cursor-pointer tracking-widest"
-            style={{zIndex: 100}}
-          >
-            건너뛰기 ▶▶
-          </button>
-        </div>
-      );
-    }
-
+  if (currentScene === 'intro') {
     return (
       <div 
-        className="min-h-screen text-white font-sans bg-zinc-950 scanline-overlay"
-        style={{overflowY: 'auto'}}
+        className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative scanline-overlay bg-zinc-950"
       >
-        {/* 배경 이미지 */}
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundImage: 'url("/src/assets/images/dawn_school_hallway_1779356366228.png")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.2,
-            zIndex: 0,
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div style={{position: 'relative', zIndex: 1}} className="flex flex-col items-center justify-center p-6 py-12 text-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-4xl w-full space-y-12"
+        
+        {/* Cinematic Background Video Component with Autoplay and Fallback Paths */}
+        <video
+          autoPlay
+          muted
+          playsInline
+          loop={videoEnded}
+          onEnded={() => setVideoEnded(true)}
+          className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${
+            videoEnded ? 'opacity-30' : 'opacity-90'
+          }`}
+          poster="/src/assets/images/dawn_school_hallway_1779356366228.png"
         >
+          <source src="/src/assets/videos/intro.mp4" type="video/mp4" />
+          <source src="/src/assets/images/intro.mp4" type="video/mp4" />
+          <source src="/intro.mp4" type="video/mp4" />
+          <source src="/src/assets/videos/intro_video.mp4" type="video/mp4" />
+          <source src="/intro_video.mp4" type="video/mp4" />
+        </video>
+
+        {/* Skip button for seamless navigation */}
+        {!videoEnded && (
+          <div className="absolute inset-0 flex flex-col justify-end items-center pb-20 z-20 pointer-events-none">
+            <button 
+              onClick={(e) => { e.stopPropagation(); setVideoEnded(true); }}
+              className="px-6 py-3 bg-black/60 hover:bg-black/95 border border-white/10 hover:border-white/30 rounded-full text-xs font-black text-zinc-300 hover:text-white transition-all pointer-events-auto cursor-pointer animate-pulse font-sans"
+            >
+              인트로 비디오 건너뛰기 ─ 클릭하여 직접 조사하기
+            </button>
+          </div>
+        )}
+
+        {/* Backdrop Tint Overlay for Readability */}
+        <div className={`absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/55 to-zinc-950/95 z-0 pointer-events-none transition-opacity duration-1000 ${
+          videoEnded ? 'opacity-100' : 'opacity-20'
+        }`} />
+
+        {/* CRT Scanline bars and flicker */}
+        <div className="absolute inset-0 scanline-bar bg-white/[0.01] h-32 w-full select-none pointer-events-none z-0" />
+        
+        <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-4xl w-full relative z-20 space-y-12 text-center py-12"
+          >
             {/* Subtle upper metadata */}
             <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-indigo-950/50 border border-indigo-800/30 rounded-full text-[10px] font-black tracking-[0.4em] text-indigo-400 crt-flicker">
               <Volume2 size={12} className="animate-pulse" />
@@ -622,7 +621,7 @@ export default function App() {
                     selectedCharacterId: prev.selectedCharacterId || CHARACTERS[0].id
                   }));
                   setView('MAIN');
-
+                  setCurrentScene('game');
                 }}
                 className="px-12 py-5 bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-600 hover:to-indigo-600 hover:scale-105 text-white font-black tracking-widest rounded-2xl shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all text-sm pulse-glowing cursor-pointer"
               >
@@ -631,7 +630,6 @@ export default function App() {
               <p className="mt-3 text-[10px] text-zinc-500 font-mono tracking-widest uppercase">CONNECTION STABLE: PORT 3000 SECURE</p>
             </div>
           </motion.div>
-        </div>
       </div>
     );
   }
