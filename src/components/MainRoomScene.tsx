@@ -187,39 +187,28 @@ export default function MainRoomScene({
           </div>
         </div>
         
-        <div className="flex gap-4 items-center pointer-events-auto">
-          <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl flex items-center gap-4 shadow-xl">
-            <div className="flex flex-col text-right">
-              <span className="text-[9px] text-zinc-500 uppercase tracking-widest leading-none">INVENTORY BAG</span>
-              <span className="text-sm font-black text-blue-400 font-mono mt-1">{state.inventory.length} PACKS</span>
-            </div>
-            <div className="h-6 w-px bg-zinc-800" />
-            <div className="flex gap-1.5">
-              {state.inventory.length > 0 ? (
-                state.inventory.map((item, i) => (
-                  <div key={i} className="px-2 py-1 bg-blue-950/40 border border-blue-800/30 rounded text-[10px] text-blue-300 font-semibold" id={`inv-item-${i}`}>
-                    {item}
-                  </div>
-                ))
-              ) : (
-                <span className="text-xs text-zinc-600 italic">빈 배낭</span>
-              )}
-            </div>
-          </div>
-          
-          <button
-            id="go-to-title-btn"
-            onClick={() => {
-              if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
-                setView('INTRO');
-                window.location.hash = '';
-              }
-            }}
-            className="px-4 py-2 bg-zinc-900 hover:bg-red-950/50 border border-zinc-800 hover:border-red-900/50 rounded-xl text-xs text-zinc-400 hover:text-red-400 font-bold transition-all cursor-pointer"
-          >
-            타이틀로
-          </button>
-        </div>
+  <div className="flex gap-4 items-center pointer-events-auto">
+
+  <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl shadow-xl">
+    <span className="text-sm font-black text-blue-400">
+      단서 {state.inventory.length}개
+    </span>
+  </div>
+
+  <button
+    id="go-to-title-btn"
+    onClick={() => {
+      if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
+        setView('INTRO');
+        window.location.reload();
+      }
+    }}
+    className="px-4 py-2 bg-zinc-900 hover:bg-red-950/50 border border-zinc-800 hover:border-red-900/50 rounded-xl text-xs text-zinc-400 hover:text-red-400 font-bold transition-all cursor-pointer"
+  >
+    타이틀로
+  </button>
+
+</div>
       </nav>
 
       {/* Screen Noise & Glitch simulator on view changes (Transition feel) */}
