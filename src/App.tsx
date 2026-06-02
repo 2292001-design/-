@@ -421,7 +421,7 @@ export default function App() {
     return (
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[70] bg-black/90 backdrop-blur-md flex items-center justify-center p-6"
+        className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-md flex items-center justify-center p-6"
       >
         <div className="bg-zinc-950 border border-indigo-500/30 rounded-[3rem] p-8 max-w-xl w-full relative shadow-3xl overflow-hidden text-left">
           {/* Subtle Glowing Aura */}
