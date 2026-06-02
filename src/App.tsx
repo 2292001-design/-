@@ -200,21 +200,23 @@ export default function App() {
         </div>
       </div>
       
-      <div className="flex gap-4 items-center pointer-events-auto">
-        <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl shadow-xl">
-  <span className="text-sm font-black text-blue-400">
-    단서 {state.inventory.length}개
-  </span>
+     <div className="flex gap-4 items-center pointer-events-auto">
+
+  <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl shadow-xl">
+    <span className="text-sm font-black text-blue-400">
+      단서 {state.inventory.length}개
+    </span>
+  </div>
+
+  <button
+    onClick={() => window.location.reload()}
+  >
+    타이틀로
+  </button>
+
 </div>
-        </div>
-        
-        <button
-  onClick={() => window.location.reload()}
->
-  타이틀로
-</button>
-      </div>
-    </nav>
+
+</nav>
   );
 
   // 2. Character selection & Skill console at the bottom
