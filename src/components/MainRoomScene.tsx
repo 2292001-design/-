@@ -138,7 +138,7 @@ export default function MainRoomScene({
       title: "교단 & 거대 칠판 강단",
       desc: "교사가 감시하던 높은 강단과 희뿌연 낙서들로 뒤덮인 칠판 벽면입니다.",
       objects: [
-        { id: 'chalkboard', label: '자습실 중앙 칠판', iconType: 'chalkboard', pos: { top: '25%', left: '50%' }, theme: 'border-green-900/30 hover:border-green-500/50 hover:bg-green-950/10' },
+        { id: 'chalkboard', label: '자습실 중앙 칠판', iconType: 'chalkboard', pos: { top: '25%', left: '70%' }, theme: 'border-green-900/30 hover:border-green-500/50 hover:bg-green-950/10' },
         { id: 'podium', label: '교탁 (스탠드 조명)', iconType: 'podium', pos: { bottom: '25%', left: '50%' }, theme: 'border-zinc-800 hover:border-indigo-500/50 hover:bg-indigo-950/20 shadow-amber-500/5' }
       ]
     },
