@@ -485,7 +485,7 @@ export default function App() {
               onClick={() => setInspectingCharacter(null)}
               className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-bold rounded-xl transition-all cursor-pointer border border-zinc-800"
             >
-              임시 관람 완료 (대장 닫기)
+              닫기
             </button>
           </div>
         </div>
@@ -528,7 +528,7 @@ export default function App() {
               onClick={(e) => { e.stopPropagation(); setVideoEnded(true); }}
               className="px-6 py-3 bg-black/60 hover:bg-black/95 border border-white/10 hover:border-white/30 rounded-full text-xs font-black text-zinc-300 hover:text-white transition-all pointer-events-auto cursor-pointer animate-pulse font-sans"
             >
-              인트로 비디오 건너뛰기 ─ 클릭하여 직접 조사하기
+              인트로 비디오 건너뛰기 ─ 클릭하여 탈출 시작하기
             </button>
           </div>
         )}
@@ -563,10 +563,10 @@ export default function App() {
             <div className="max-w-xl mx-auto p-6 bg-zinc-950/80 border border-zinc-800/60 rounded-3xl backdrop-blur space-y-4">
               <p className="text-sm text-zinc-400 font-serif leading-relaxed italic">
                 &quot;아무도 없는 한밤중의 S클래스 우등생 자습실.<br />
-                억울하게 명단에서 지워지고 버림받은 5번째 소녀, <strong className="text-red-400 font-sans font-bold">최은서</strong>.<br />
+                억울하게 명단에서 지워지고 버림받은 6번째 소녀, <strong className="text-red-400 font-sans font-bold">최은서</strong>.<br />
                 <span className="text-red-400 font-sans font-bold block mt-1.5 mb-1.5">&quot;그녀의 분노는 우리를 자습실에 가뒀다.&quot;</span>
                 그녀의 왜곡된 편지와 은밀한 징계 일지가 퍼즐이 되어 자습실을 봉인했다.<br />
-                4명의 동급생 친구들과 함께 잊혀진 기억의 코드를 복원하고 탈출하라.&quot;
+                5명의 동급생 친구들과 함께 잊혀진 기억의 코드를 복원하고 탈출하라.&quot;
               </p>
               <div className="h-px bg-zinc-800" />
               <div className="flex justify-around text-left pt-2 font-sans">
@@ -625,7 +625,7 @@ export default function App() {
                 }}
                 className="px-12 py-5 bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-600 hover:to-indigo-600 hover:scale-105 text-white font-black tracking-widest rounded-2xl shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all text-sm pulse-glowing cursor-pointer"
               >
-                자습실 CCTV 기기 연동 및 잠입 개시
+                자습실로 들어가기
               </button>
               <p className="mt-3 text-[10px] text-zinc-500 font-mono tracking-widest uppercase">CONNECTION STABLE: PORT 3000 SECURE</p>
             </div>
