@@ -384,7 +384,7 @@ export default function MainRoomScene({
       </main>
 
       {/* 2. Character selection & Skill console at the bottom */}
-      <div id="character-panel" className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-950/90 border border-zinc-800 px-6 py-4 rounded-3xl shadow-3xl z-30 max-w-lg scale-75">
+      <div id="character-panel" className="fixed bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-950/90 border border-zinc-800 px-8 py-2 rounded-3xl shadow-3xl z-30 w-[90vw] max-w-5xl scale-100">
         <div className="flex flex-col shrink-0 select-none">
           <span className="text-[9px] text-zinc-500 font-black tracking-widest uppercase">INVESTIGATOR</span>
           <span className="text-xs font-bold text-white mt-1">우등반</span>
