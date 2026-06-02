@@ -628,8 +628,9 @@ export default function App() {
               <p className="mt-3 text-[10px] text-zinc-500 font-mono tracking-widest uppercase">CONNECTION STABLE: PORT 3000 SECURE</p>
             </div>
           </motion.div>
-      </div>
-    );
+           </div>
+    </>
+  );
   }
 
   // Final Endings Choice View
