@@ -509,7 +509,7 @@ export default function App() {
           playsInline
           loop={videoEnded}
           onEnded={() => setVideoEnded(true)}
-          className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${
+          className={`absolute inset-0 w-full h-full object-cover z-0 pointer-events-none transition-opacity duration-1000 ${
             videoEnded ? 'opacity-30' : 'opacity-90'
           }`}
           poster="/src/assets/images/dawn_school_hallway_1779356366228.png"
