@@ -162,7 +162,10 @@ export default function MainRoomScene({
   const currentWall = currentWallConfig[state.direction];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-200 font-sans selection:bg-indigo-500/30 overflow-hidden relative">
+    <div
+  className="min-h-screen text-zinc-200 font-sans selection:bg-indigo-500/30 overflow-hidden relative"
+  style={getDirectionStyle(state.direction)}
+>
       
       {/* 1. HUD System Header (Inventory & Stage Info) */}
       <nav id="game-hud" className="fixed top-0 inset-x-0 p-6 flex justify-between items-start z-40 bg-gradient-to-b from-black/95 via-black/40 to-transparent pointer-events-none">
