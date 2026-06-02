@@ -75,7 +75,7 @@ export default function MainRoomScene({
 
   const getDirectionStyle = (dir: Direction) => {
     const baseGradient = 'linear-gradient(to bottom, rgba(10, 10, 15, 0.45), rgba(10, 10, 15, 0.82))';
-    const dawnImage = "/src/assets/images/dawn_study_room_1779356399990.png";
+    const dawnImage = "/dawn_study_room_1779356399990.png";
     
     switch (dir) {
       case 'NORTH':
