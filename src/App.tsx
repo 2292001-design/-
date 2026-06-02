@@ -135,7 +135,7 @@ export default function App() {
     const rawInput = answer.replace(/\s+/g, '').toUpperCase();
     const correctAnswers = ["6-5-3", "CHOIEUNSEO", "JUSTICE", "20240514", "1324"];
     
-    if (rawInput === correctAnswers[state.currentStageIdx]) {
+    if (correctAnswers.includes(rawInput)) {
       const stageKey = `stage${currentStage.id}_clear`;
       const dialogue = DIALOGUES.find(d => d.trigger === stageKey);
       
