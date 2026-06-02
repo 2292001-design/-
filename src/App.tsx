@@ -225,7 +225,7 @@ export default function App() {
 
   // 2. Character selection & Skill console at the bottom
   const CharacterPanel = () => (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-950/90 border border-zinc-800 px-6 py-4 rounded-3xl shadow-3xl z-30 max-w-2xl w-full">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-zinc-950/90 border border-zinc-800 px-10 py-2 rounded-3xl shadow-3xl z-30 max-w-2xl w-full">
       <div className="flex flex-col shrink-0">
         <span className="text-[9px] text-zinc-500 font-black tracking-widest uppercase">INVESTIGATOR</span>
         <span className="text-xs font-bold text-white mt-1">현장 조사팀</span>
