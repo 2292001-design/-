@@ -201,23 +201,11 @@ export default function App() {
       </div>
       
       <div className="flex gap-4 items-center pointer-events-auto">
-        <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl flex items-center gap-4 shadow-xl">
-          <div className="flex flex-col text-right">
-            <span className="text-[9px] text-zinc-500 uppercase tracking-widest leading-none">INVENTORY BAG</span>
-            <span className="text-sm font-black text-blue-400 font-mono mt-1">{state.inventory.length} PACKS</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div className="flex gap-1.5">
-            {state.inventory.length > 0 ? (
-              state.inventory.map((item, i) => (
-                <div key={i} className="px-2 py-1 bg-blue-950/40 border border-blue-800/30 rounded text-[10px] text-blue-300 font-semibold">
-                  {item}
-                </div>
-              ))
-            ) : (
-              <span className="text-xs text-zinc-600 italic">빈 배낭</span>
-            )}
-          </div>
+        <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl shadow-xl">
+  <span className="text-sm font-black text-blue-400">
+    단서 {state.inventory.length}개
+  </span>
+</div>
         </div>
         
         <button
