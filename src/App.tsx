@@ -107,10 +107,7 @@ export default function App() {
       setCctvTime(`${yy}-${mm}-${dd} ${hh}:${min}:${ss}`);
       
       // Random glitch intervals to simulate surveillance camera static noise
-      if (Math.random() < 0.01) {
-        setGlitchActive(true);
-        setTimeout(() => setGlitchActive(false), 220);
-      }
+    
     }, 1000);
     return () => clearInterval(interval);
   }, []);
