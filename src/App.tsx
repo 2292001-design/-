@@ -51,7 +51,7 @@ export default function App() {
   const [showSkillHint, setShowSkillHint] = useState(false);
   const [cctvTime, setCctvTime] = useState('2026-10-24 03:31:31');
   const [glitchActive, setGlitchActive] = useState(false);
-
+  const ENABLE_GLITCH = false;
 
 
   const getDirectionStyle = (dir: Direction) => {
