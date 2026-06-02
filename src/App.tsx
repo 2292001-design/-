@@ -490,8 +490,13 @@ export default function App() {
 
   // Intro Cinematic Screen
   if (currentScene === 'intro') {
-    return (
-      <div 
+  return (
+    <>
+      {inspectingCharacter && (
+        <CharacterDetailModal />
+      )}
+
+      <div
         className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative scanline-overlay bg-zinc-950"
       >
         
