@@ -499,55 +499,54 @@ export default function App() {
 
   // Intro Cinematic Screen
   if (view === 'INTRO') {
+    // 영상 재생 중이면 영상 화면만 표시
+    if (!videoEnded) {
+      return (
+        <div className="fixed inset-0 bg-black flex items-center justify-center">
+          <video
+            autoPlay
+            playsInline
+            onEnded={() => setVideoEnded(true)}
+            className="w-full h-full object-cover"
+          >
+            <source src="/intro.mp4" type="video/mp4" />
+          </video>
+          <button
+            onClick={() => setVideoEnded(true)}
+            className="absolute bottom-10 right-10 px-5 py-2.5 bg-black/70 hover:bg-black border border-white/20 hover:border-white/50 rounded-full text-xs font-black text-zinc-300 hover:text-white transition-all cursor-pointer tracking-widest"
+            style={{zIndex: 100}}
+          >
+            건너뛰기 ▶▶
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div 
-        className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-y-auto scanline-overlay bg-zinc-950"
+        className="min-h-screen text-white font-sans bg-zinc-950 scanline-overlay"
+        style={{overflowY: 'auto'}}
       >
-
-        {/* ── 인트로 영상 재생 (videoEnded === false 일 때) ── */}
-        {!videoEnded && (
-          <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-            <video
-              autoPlay
-              muted={false}
-              playsInline
-              onEnded={() => setVideoEnded(true)}
-              className="w-full h-full object-cover"
-            >
-              <source src="/intro.mp4" type="video/mp4" />
-            </video>
-            {/* 건너뛰기 버튼 */}
-            <button
-              onClick={() => setVideoEnded(true)}
-              className="absolute bottom-10 right-10 px-5 py-2.5 bg-black/70 hover:bg-black border border-white/20 hover:border-white/50 rounded-full text-xs font-black text-zinc-300 hover:text-white transition-all cursor-pointer z-10 tracking-widest"
-            >
-              건너뛰기 ▶▶
-            </button>
-          </div>
-        )}
-        
-        {/* Atmospheric Background Image */}
+        {/* 배경 이미지 */}
         <div
-          className="absolute inset-0 w-full h-full z-0"
           style={{
+            position: 'fixed',
+            inset: 0,
             backgroundImage: 'url("/src/assets/images/dawn_school_hallway_1779356366228.png")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.3,
+            opacity: 0.2,
+            zIndex: 0,
+            pointerEvents: 'none',
           }}
         />
 
-        {/* Backdrop Tint Overlay for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/55 to-zinc-950/95 z-0 pointer-events-none" />
-
-        {/* CRT Scanline bars and flicker */}
-        <div className="absolute inset-0 scanline-bar bg-white/[0.01] h-32 w-full select-none pointer-events-none z-10" />
-        
+        <div style={{position: 'relative', zIndex: 1}} className="flex flex-col items-center justify-center p-6 py-12 text-center">
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-4xl w-full relative z-10 space-y-12 text-center py-12"
+          className="max-w-4xl w-full space-y-12"
         >
             {/* Subtle upper metadata */}
             <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-indigo-950/50 border border-indigo-800/30 rounded-full text-[10px] font-black tracking-[0.4em] text-indigo-400 crt-flicker">
@@ -632,6 +631,7 @@ export default function App() {
               <p className="mt-3 text-[10px] text-zinc-500 font-mono tracking-widest uppercase">CONNECTION STABLE: PORT 3000 SECURE</p>
             </div>
           </motion.div>
+        </div>
       </div>
     );
   }
