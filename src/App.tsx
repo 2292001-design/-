@@ -280,7 +280,7 @@ export default function App() {
 
   // 3. Ghost's fragmented dialogue overlays
   const DialogueOverlay = ({ text, onComplete }: { text: string, onComplete: () => void }) => (
-    <motion.div 
+   <div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-12 scanline-overlay"
     >
@@ -296,7 +296,7 @@ export default function App() {
           className="text-2xl font-serif italic text-zinc-200 leading-relaxed font-black"
         >
           &quot;{text}&quot;
-        </motion.p>
+        </motion<p>
         <button 
           onClick={onComplete}
           className="px-6 py-3 bg-red-950/60 border border-red-800/40 hover:bg-zinc-800 hover:border-zinc-500 text-xs font-black tracking-widest text-red-400 hover:text-white rounded-xl transition-all active:scale-95"
