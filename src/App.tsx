@@ -32,8 +32,8 @@ import MainRoomScene from './components/MainRoomScene';
 
 export default function App() {
   const [view, setView] = useState<View>('INTRO');
-  const [currentScene, setCurrentScene] = useState<'intro' | 'game'>('intro');
-  const [videoEnded, setVideoEnded] = useState(true); // 영상 없을 때도 타이틀 바로 표시
+  
+  const [videoEnded, setVideoEnded] = useState(true);
   const [inspectingCharacter, setInspectingCharacter] = useState<Character | null>(null);
   const [state, setState] = useState<GameState>({
     currentStageIdx: 0,
@@ -223,7 +223,7 @@ export default function App() {
             if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
               window.location.hash = '';
               setView('INTRO');
-              setCurrentScene('intro');
+
               setVideoEnded(false);
             }
           }}
@@ -498,7 +498,7 @@ export default function App() {
   // --- RENDERING VIEWS ---
 
   // Intro Cinematic Screen
-  if (currentScene === 'intro') {
+  if (view === 'INTRO') {
     return (
       <div 
         className="min-h-screen text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden scanline-overlay bg-zinc-950"
@@ -623,7 +623,7 @@ export default function App() {
                     selectedCharacterId: prev.selectedCharacterId || CHARACTERS[0].id
                   }));
                   setView('MAIN');
-                  setCurrentScene('game');
+
                 }}
                 className="px-12 py-5 bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-600 hover:to-indigo-600 hover:scale-105 text-white font-black tracking-widest rounded-2xl shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all text-sm pulse-glowing cursor-pointer"
               >
