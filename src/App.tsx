@@ -189,7 +189,7 @@ export default function App() {
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-red-600 rounded-full animate-ping" />
-            <h1 className="text-xs font-black tracking-widest text-zinc-400 leading-none">MEMORIES RETRIEVAL ONLINE</h1>
+            <h1 className="text-xs font-black tracking-widest text-zinc-400 leading-none">MEMORIES RETRIEVAL ONLIN TEST</h1>
           </div>
           <p className="text-lg font-bold font-serif text-white mt-1">
             STAGE {state.currentStageIdx + 1}: {currentStage.title}
