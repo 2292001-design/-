@@ -136,6 +136,10 @@ export default function App() {
     const correctAnswers = ["6-5-3", "CHOIEUNSEO", "JUSTICE", "20240514", "1324"];
     
     if (correctAnswers.includes(rawInput)) {
+      if (state.solvedStages.includes(currentStage.id)) {
+  setMessage('이미 해결한 단서입니다.');
+  return;
+}
       const stageKey = `stage${currentStage.id}_clear`;
       const dialogue = DIALOGUES.find(d => d.trigger === stageKey);
       
