@@ -121,11 +121,13 @@ export default function App() {
     if (nextIdx > 3) nextIdx = 0;
     
     // Set subtle transition effect
-    setGlitchActive(true);
-    setTimeout(() => {
-      setGlitchActive(false);
-      setState(prev => ({ ...prev, direction: directions[nextIdx] }));
-    }, 180);
+    if (ENABLE_GLITCH) {
+  setGlitchActive(true);
+
+  setTimeout(() => {
+    setGlitchActive(false);
+  }, 180);
+}
   };
 
   // --- Game Logic & Decoding ---
