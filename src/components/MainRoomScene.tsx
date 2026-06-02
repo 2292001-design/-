@@ -197,12 +197,9 @@ export default function MainRoomScene({
 
   <button
     id="go-to-title-btn"
-    onClick={() => {
-      if (confirm("정말 메인 화면(타이틀)으로 나가시겠습니까? 현재 진행 상황이 리셋될 수 있습니다.")) {
-        setView('INTRO');
-        window.location.reload();
-      }
-    }}
+   onClick={() => {
+  window.location.href = "/";
+}}
     className="px-4 py-2 bg-zinc-900 hover:bg-red-950/50 border border-zinc-800 hover:border-red-900/50 rounded-xl text-xs text-zinc-400 hover:text-red-400 font-bold transition-all cursor-pointer"
   >
     타이틀로
