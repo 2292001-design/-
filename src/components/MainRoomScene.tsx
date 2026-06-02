@@ -429,6 +429,8 @@ export default function MainRoomScene({
       {/* Clue/Object click terminal inspection pop-up modal overlay */}
       <AnimatePresence>
         {state.inspectingObject && (
+  const alreadySolved =
+  state.solvedStages.includes(currentStage.id);
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
             id="clue-inspection-overlay"
