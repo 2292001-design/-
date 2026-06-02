@@ -387,7 +387,7 @@ export default function MainRoomScene({
       <div id="character-panel" className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-950/90 border border-zinc-800 px-6 py-4 rounded-3xl shadow-3xl z-30 max-w-2xl w-full">
         <div className="flex flex-col shrink-0 select-none">
           <span className="text-[9px] text-zinc-500 font-black tracking-widest uppercase">INVESTIGATOR</span>
-          <span className="text-xs font-bold text-white mt-1">현장 조사팀</span>
+          <span className="text-xs font-bold text-white mt-1">우등반</span>
         </div>
         <div className="h-8 w-px bg-zinc-800 shrink-0" />
         <div className="flex gap-3 overflow-x-auto py-1 items-center w-full">
@@ -464,7 +464,7 @@ export default function MainRoomScene({
                 </div>
                 <div>
                   <span className="text-[9px] text-zinc-500 font-mono tracking-widest leading-none block uppercase">SPATIAL EVIDENCE SURVEY</span>
-                  <h3 className="text-lg font-bold text-white mt-1">현장 흔적 정밀 검사</h3>
+                  <h3 className="text-lg font-bold text-white mt-1">현장 단서</h3>
                 </div>
               </div>
               
@@ -488,7 +488,7 @@ export default function MainRoomScene({
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && onSolve(input)}
-                  placeholder="예: 6-5-3, J_U_S_T_I_C_E 등 코드 정정 입력..."
+                  placeholder="예: 코드 입력..."
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-white text-center outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-mono tracking-wide"
                 />
                 <div className="grid grid-cols-2 gap-3">
