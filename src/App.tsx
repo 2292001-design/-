@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Search, 
@@ -49,7 +49,6 @@ export default function App() {
   const [input, setInput] = useState('');
   const [message, setMessage] = useState('');
   const [showSkillHint, setShowSkillHint] = useState(false);
-  const [cctvTime, setCctvTime] = useState('2026-10-24 03:31:31');
   const [glitchActive, setGlitchActive] = useState(false);
   const ENABLE_GLITCH = false;
 
@@ -104,25 +103,6 @@ export default function App() {
   };
 
   const currentStage = STAGES[state.currentStageIdx];
-
-  // --- Real-time CCTV Digital Clock (Ticking every second) ---
-  useEffect(() => {
-    let baseTime = new Date('2026-10-24T03:31:31');
-    const interval = setInterval(() => {
-      baseTime.setSeconds(baseTime.getSeconds() + 1);
-      const yy = baseTime.getFullYear();
-      const mm = String(baseTime.getMonth() + 1).padStart(2, '0');
-      const dd = String(baseTime.getDate()).padStart(2, '0');
-      const hh = String(baseTime.getHours()).padStart(2, '0');
-      const min = String(baseTime.getMinutes()).padStart(2, '0');
-      const ss = String(baseTime.getSeconds()).padStart(2, '0');
-      setCctvTime(`${yy}-${mm}-${dd} ${hh}:${min}:${ss}`);
-      
-      // Random glitch intervals to simulate surveillance camera static noise
-    
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   // --- Navigation (S-class Space View transition) ---
   const rotate = (dir: 'LEFT' | 'RIGHT') => {
@@ -190,14 +170,18 @@ export default function App() {
     const solvedStageIds = Array.from(new Set([...state.solvedStages, target.stageId]));
     const allSolved = STAGES.every(stage => solvedStageIds.includes(stage.id));
 
-    setState(prev => ({
-      ...prev,
-      inventory: Array.from(new Set([...prev.inventory, ...solvedStage.reward])),
-      solvedStages: Array.from(new Set([...prev.solvedStages, target.stageId])),
-      activeDialogue: dialogue ? dialogue.line : null,
-      inspectingObject: null,
-      currentStageIdx: Math.max(prev.currentStageIdx, target.stageId),
-    }));
+    setState(prev => {
+      const nextUnsolvedIdx = STAGES.findIndex(stage => !solvedStageIds.includes(stage.id));
+
+      return {
+        ...prev,
+        inventory: Array.from(new Set([...prev.inventory, ...solvedStage.reward])),
+        solvedStages: solvedStageIds,
+        activeDialogue: dialogue ? dialogue.line : null,
+        inspectingObject: null,
+        currentStageIdx: nextUnsolvedIdx === -1 ? STAGES.length - 1 : nextUnsolvedIdx,
+      };
+    });
 
     setMessage('단서 매칭 완료. 기록의 실마리를 잠금 해제했습니다.');
     setInput('');
@@ -213,7 +197,6 @@ export default function App() {
   const useCharacterSkill = () => {
     if (!state.selectedCharacterId) return;
     setShowSkillHint(true);
-    setTimeout(() => setShowSkillHint(false), 5000);
   };
 
   // --- UI Components ---
@@ -325,13 +308,9 @@ export default function App() {
           <span className="text-[10px] text-red-500 font-mono tracking-[0.4em] mb-2 uppercase">INTERCEPTED WHISPER</span>
           <span className="text-sm font-bold text-zinc-500">- 최은서의 억울한 기억 파편 -</span>
         </div>
-        <motion.p 
-          initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-2xl font-serif italic text-zinc-200 leading-relaxed font-black"
-        >
+        <p className="text-2xl font-serif italic text-zinc-200 leading-relaxed font-black">
           &quot;{text}&quot;
-       </motion.p>
+        </p>
         <button 
           onClick={onComplete}
           className="px-6 py-3 bg-red-950/60 border border-red-800/40 hover:bg-zinc-800 hover:border-zinc-500 text-xs font-black tracking-widest text-red-400 hover:text-white rounded-xl transition-all active:scale-95"
@@ -451,10 +430,7 @@ export default function App() {
     const details = profiles[inspectingCharacter.id] || { roleDetail: "", backstory: "", skillDetail: "" };
     
     return (
-      <motion.div 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-md flex items-center justify-center p-6"
-      >
+      <div className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-md flex items-center justify-center p-6">
         <div className="bg-zinc-950 border border-indigo-500/30 rounded-[3rem] p-8 max-w-xl w-full relative shadow-3xl overflow-hidden text-left">
           {/* Subtle Glowing Aura */}
           <div className="absolute -top-12 -left-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -514,7 +490,7 @@ export default function App() {
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
@@ -704,7 +680,6 @@ export default function App() {
         setMessage={setMessage}
         showSkillHint={showSkillHint}
         setShowSkillHint={setShowSkillHint}
-        cctvTime={cctvTime}
         glitchActive={glitchActive}
         rotate={rotate}
         useCharacterSkill={useCharacterSkill}
@@ -716,30 +691,24 @@ export default function App() {
         getSkillHint={getSkillHint}
       />
 
-      <AnimatePresence>
-        {inspectingCharacter && (
-          <CharacterDetailModal />
-        )}
-        {state.activeDialogue && (
-          <DialogueOverlay 
-            text={state.activeDialogue} 
-            onComplete={() => setState(prev => ({ ...prev, activeDialogue: null }))} 
-          />
-        )}
-      </AnimatePresence>
+      {inspectingCharacter && (
+        <CharacterDetailModal />
+      )}
 
-      <AnimatePresence>
-        {message && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-28 inset-x-0 flex justify-center z-[100] pointer-events-none"
-          >
-            <div className="bg-white text-black px-8 py-3.5 rounded-full font-extrabold shadow-2xl text-xs tracking-wider border border-zinc-200">
-              {message}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {state.activeDialogue && (
+        <DialogueOverlay
+          text={state.activeDialogue}
+          onComplete={() => setState(prev => ({ ...prev, activeDialogue: null }))}
+        />
+      )}
+
+      {message && (
+        <div className="fixed bottom-28 inset-x-0 flex justify-center z-[100] pointer-events-none">
+          <div className="bg-white text-black px-8 py-3.5 rounded-full font-extrabold shadow-2xl text-xs tracking-wider border border-zinc-200">
+            {message}
+          </div>
+        </div>
+      )}
     </>
   );
 }
