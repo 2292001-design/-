@@ -485,13 +485,7 @@ export default function MainRoomScene({
     placeholder="정답 입력"
     className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-white text-center outline-none focus:border-indigo-500"
   />
-
-)}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && onSolve(input)}
-                  placeholder="예: 코드 입력..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-white text-center outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-mono tracking-wide"
-                />
+            
               {!alreadySolved && (
   <div className="grid grid-cols-2 gap-3">
 
@@ -514,14 +508,9 @@ export default function MainRoomScene({
     >
       암호 전송
     </button>
-
-  </div>
-)}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
+</div>
+</div>            
+)}            
       </AnimatePresence>
 
       {/* Floating Sparkles Skill Guide Banner */}
