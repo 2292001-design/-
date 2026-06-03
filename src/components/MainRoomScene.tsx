@@ -475,7 +475,7 @@ export default function MainRoomScene({
   </div>
 
 ) : (
-
+            
   <input
     autoFocus
     type="text"
@@ -485,8 +485,7 @@ export default function MainRoomScene({
     placeholder="정답 입력"
     className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-white text-center outline-none focus:border-indigo-500"
   />
-            
-              {!alreadySolved && (
+
   <div className="grid grid-cols-2 gap-3">
 
     <button
@@ -508,9 +507,11 @@ export default function MainRoomScene({
     >
       암호 전송
     </button>
-</div>
-</div>            
-)}            
+
+  </div>
+</>
+
+)}  
       </AnimatePresence>
 
       {/* Floating Sparkles Skill Guide Banner */}
