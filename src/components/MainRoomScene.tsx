@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Search, 
@@ -36,7 +36,6 @@ interface MainRoomSceneProps {
   setMessage: (val: string) => void;
   showSkillHint: boolean;
   setShowSkillHint: (val: boolean) => void;
-  cctvTime: string;
   glitchActive: boolean;
   rotate: (dir: 'LEFT' | 'RIGHT') => void;
   useCharacterSkill: () => void;
@@ -59,7 +58,6 @@ export default function MainRoomScene({
   setMessage,
   showSkillHint,
   setShowSkillHint,
-  cctvTime,
   glitchActive,
   rotate,
   useCharacterSkill,
@@ -72,6 +70,28 @@ export default function MainRoomScene({
 }: MainRoomSceneProps) {
 
   const currentStage = stages[state.currentStageIdx] || stages[stages.length - 1];
+  const CctvClock = () => {
+    const [time, setTime] = useState('2026-10-24 03:31:31');
+
+    useEffect(() => {
+      const baseTime = new Date('2026-10-24T03:31:31');
+      const interval = window.setInterval(() => {
+        baseTime.setSeconds(baseTime.getSeconds() + 1);
+        const yy = baseTime.getFullYear();
+        const mm = String(baseTime.getMonth() + 1).padStart(2, '0');
+        const dd = String(baseTime.getDate()).padStart(2, '0');
+        const hh = String(baseTime.getHours()).padStart(2, '0');
+        const min = String(baseTime.getMinutes()).padStart(2, '0');
+        const ss = String(baseTime.getSeconds()).padStart(2, '0');
+        setTime(`${yy}-${mm}-${dd} ${hh}:${min}:${ss}`);
+      }, 1000);
+
+      return () => window.clearInterval(interval);
+    }, []);
+
+    return <span className="font-extrabold tracking-wider text-white">{time}</span>;
+  };
+
 
   const getDirectionStyle = (dir: Direction) => {
     const baseGradient = 'linear-gradient(to bottom, rgba(10, 10, 15, 0.45), rgba(10, 10, 15, 0.82))';
@@ -178,6 +198,17 @@ export default function MainRoomScene({
   const alreadySolved =
     activeObjectStageId !== null && state.solvedStages.includes(activeObjectStageId);
 
+  const solvedStageCount = stages.filter(stage => state.solvedStages.includes(stage.id)).length;
+  const allStagesSolved = stages.every(stage => state.solvedStages.includes(stage.id));
+
+  const getObjectStageInfo = (objectId: string) => {
+    const stageId = objectToStageId[objectId];
+    return {
+      stageId,
+      solved: typeof stageId === 'number' && state.solvedStages.includes(stageId),
+    };
+  };
+
   return (
     <div
   className="min-h-screen text-zinc-200 font-sans selection:bg-indigo-500/30 overflow-hidden relative"
@@ -208,7 +239,7 @@ export default function MainRoomScene({
 
   <div className="px-5 py-3 bg-zinc-950/90 border border-zinc-800 rounded-2xl shadow-xl">
     <span className="text-sm font-black text-blue-400">
-      단서 {state.inventory.length}개
+      단서 {solvedStageCount}/{stages.length}
     </span>
   </div>
 
@@ -276,7 +307,7 @@ export default function MainRoomScene({
           </div>
 
           <div className="absolute top-6 right-8 flex flex-col items-end gap-1 z-20 select-none bg-black/60 px-4 py-2 rounded-lg border border-white/5 font-mono text-[10px] text-zinc-400">
-            <span className="font-extrabold tracking-wider text-white">{cctvTime}</span>
+            <CctvClock />
             <span className="text-[9px] text-zinc-500 tracking-widest mt-0.5">CAM-07 / 3층 자습실</span>
           </div>
 
@@ -308,13 +339,20 @@ export default function MainRoomScene({
                 </div>
 
                 {/* Overlaid Interaction buttons inside the screen */}
-                {currentWall.objects.map(obj => (
+                {currentWall.objects.map(obj => {
+                  const stageInfo = getObjectStageInfo(obj.id);
+
+                  return (
                   <motion.button
                     key={obj.id}
                     id={`obj-btn-${obj.id}`}
                     whileHover={{ scale: 1.05, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => setState(prev => ({ ...prev, inspectingObject: obj.id }))}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setState(prev => ({ ...prev, inspectingObject: obj.id }));
+                    }}
                     className={`absolute p-6 flex flex-col items-center justify-center gap-3 rounded-3xl border-2 bg-zinc-950/90 shadow-2xl cursor-pointer group transition-all ${obj.theme}`}
                     style={{ 
                       top: obj.pos.top, 
@@ -324,14 +362,20 @@ export default function MainRoomScene({
                       transform: 'translateX(-50%)'
                     }}
                   >
+                    <div className={`absolute -top-3 -left-3 w-9 h-9 rounded-full border flex items-center justify-center text-xs font-black shadow-xl ${stageInfo.solved ? 'bg-green-950 border-green-600 text-green-300' : 'bg-zinc-950 border-blue-500 text-blue-300'}`}>
+                      {stageInfo.stageId}
+                    </div>
                     <div className="relative p-3 bg-zinc-900 border border-zinc-800 rounded-2xl group-hover:bg-blue-950 group-hover:border-blue-500/30 transition-all text-blue-400">
                       {renderIcon(obj.iconType)}
                       <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping" />
                     </div>
                     <span className="text-[10px] font-black tracking-widest text-zinc-500 transition-colors group-hover:text-white uppercase font-mono whitespace-nowrap">{obj.label}</span>
-                    <span className="text-[8px] text-zinc-600 font-mono scale-90 group-hover:text-blue-400 transition-all">[ 조사하기 ]</span>
+                    <span className={`text-[8px] font-mono scale-90 transition-all ${stageInfo.solved ? 'text-green-400' : 'text-zinc-600 group-hover:text-blue-400'}`}>
+                      {stageInfo.solved ? '[ 해결 완료 ]' : '[ 조사하기 ]'}
+                    </span>
                   </motion.button>
-                ))}
+                  );
+                })}
 
                 <div className="h-6 w-full" />
               </motion.div>
@@ -350,7 +394,7 @@ export default function MainRoomScene({
 
         {/* Final Escape Ending Choice Window */}
         <AnimatePresence>
-          {state.ending === null && state.currentStageIdx >= stages.length && (
+          {state.ending === null && allStagesSolved && !state.activeDialogue && (
             <motion.div 
               key="exit-scheme" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 p-12 text-center space-y-12 scanline-overlay"
@@ -398,7 +442,11 @@ export default function MainRoomScene({
             <button
               key={char.id}
               id={`panel-char-${char.id}`}
-              onClick={() => setState(prev => ({ ...prev, selectedCharacterId: char.id }))}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setState(prev => ({ ...prev, selectedCharacterId: char.id }));
+              }}
               className={`px-4 py-3 rounded-2xl border transition-all flex items-center gap-2 text-left shrink-0 cursor-pointer
                 ${state.selectedCharacterId === char.id 
                   ? 'bg-blue-950/80 border-blue-500 text-white shadow-xl' 
@@ -421,7 +469,9 @@ export default function MainRoomScene({
             <div className="flex gap-2 shrink-0">
               <button 
                 id="doc-view-btn"
-                onClick={() => {
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
                   const char = characters.find(c => c.id === state.selectedCharacterId);
                   if (char) setInspectingCharacter(char);
                 }}
@@ -432,7 +482,11 @@ export default function MainRoomScene({
               </button>
               <button 
                 id="skill-trigger-btn"
-                onClick={useCharacterSkill}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  useCharacterSkill();
+                }}
                 className="px-4 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-extrabold rounded-2xl transition-all shadow-lg flex items-center gap-1.5 active:scale-95 cursor-pointer"
               >
                 <Sparkles size={13} />
@@ -444,18 +498,21 @@ export default function MainRoomScene({
       </div>
 
       {/* Clue/Object click terminal inspection pop-up modal overlay */}
-      <AnimatePresence>
-        {state.inspectingObject && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-            id="clue-inspection-overlay"
-            className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-black/85 backdrop-blur-md"
-          >
+      {state.inspectingObject && (
+        <div
+          id="clue-inspection-overlay"
+          className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-black/85 backdrop-blur-md"
+        >
             <div className="bg-zinc-950 border border-zinc-800 rounded-[2.5rem] p-8 max-w-xl w-full relative shadow-3xl overflow-hidden text-left">
               <div className="absolute top-0 inset-x-0 h-1.5 bg-indigo-600 animate-pulse" />
               <button 
                 id="inspect-close-btn"
-                onClick={() => { setState(prev => ({ ...prev, inspectingObject: null })); setInput(''); }}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setState(prev => ({ ...prev, inspectingObject: null }));
+                  setInput('');
+                }}
                 className="absolute top-6 right-6 p-2 bg-zinc-950 border border-zinc-800 rounded-full text-zinc-400 hover:text-white transition-all cursor-pointer"
               >
                 <ArrowLeft size={18} />
@@ -503,7 +560,9 @@ export default function MainRoomScene({
 
                     <div className="grid grid-cols-2 gap-3">
                       <button
-                        onClick={() => {
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
                           setState(prev => ({
                             ...prev,
                             inspectingObject: null,
@@ -516,7 +575,11 @@ export default function MainRoomScene({
                       </button>
 
                       <button
-                        onClick={() => onSolve(input)}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          onSolve(input);
+                        }}
                         className="py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black rounded-2xl"
                       >
                         암호 전송
@@ -526,25 +589,29 @@ export default function MainRoomScene({
                 )}
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
 
       {/* Floating Sparkles Skill Guide Banner */}
-      <AnimatePresence>
-        {showSkillHint && (
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
-            className="fixed top-24 right-6 z-50 p-6 bg-gradient-to-br from-indigo-700 to-blue-800 text-white rounded-3xl shadow-2xl max-w-sm border border-indigo-500/30"
+      {showSkillHint && (
+        <div className="fixed top-24 right-6 z-50 p-6 bg-gradient-to-br from-indigo-700 to-blue-800 text-white rounded-3xl shadow-2xl max-w-sm border border-indigo-500/30">
+          <button
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setShowSkillHint(false);
+            }}
+            className="absolute top-3 right-3 px-2 py-1 rounded-lg bg-black/20 hover:bg-black/40 text-[10px] font-bold"
           >
-            <div className="flex gap-2 items-center mb-3 select-none">
-              <Sparkles size={16} className="text-amber-400 animate-spin" />
-              <span className="text-xs font-black uppercase tracking-wider">특수 스킬 발동 ─ 수사 가이드</span>
-            </div>
-            <p className="text-sm font-medium leading-relaxed font-serif italic text-zinc-100">&quot;{getSkillHint(state.currentStageIdx, state.selectedCharacterId || '')}&quot;</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            닫기
+          </button>
+          <div className="flex gap-2 items-center mb-3 select-none pr-10">
+            <Sparkles size={16} className="text-amber-400" />
+            <span className="text-xs font-black uppercase tracking-wider">특수 스킬 발동 ─ 수사 가이드</span>
+          </div>
+          <p className="text-sm font-medium leading-relaxed font-serif italic text-zinc-100">&quot;{getSkillHint(state.currentStageIdx, state.selectedCharacterId || '')}&quot;</p>
+        </div>
+      )}
 
       <footer className="fixed bottom-0 inset-x-0 p-6 text-center text-zinc-800 flex justify-center items-center gap-2 pointer-events-none select-none">
         <CheckCircle2 size={11} />
