@@ -53,6 +53,18 @@ export default function App() {
   const [glitchActive, setGlitchActive] = useState(false);
   const ENABLE_GLITCH = false;
 
+  const normalizeAnswer = (value: string) => value.replace(/\s+/g, '').toUpperCase();
+
+  const ANSWERS_BY_OBJECT: Record<string, { stageId: number; answer: string }> = {
+    lockers: { stageId: 1, answer: '6-5-3' },
+    bulletin: { stageId: 2, answer: 'CHOIEUNSEO' },
+    chalkboard: { stageId: 3, answer: 'JUSTICE' },
+    podium: { stageId: 4, answer: '20240514' },
+    water: { stageId: 4, answer: '20240514' },
+    desks: { stageId: 5, answer: '1324' },
+    door: { stageId: 5, answer: '1324' },
+  };
+
 
   const getDirectionStyle = (dir: Direction) => {
     const baseGradient = 'linear-gradient(to bottom, rgba(10, 10, 15, 0.45), rgba(10, 10, 15, 0.82))';
@@ -117,58 +129,85 @@ export default function App() {
     const directions: Direction[] = ['NORTH', 'EAST', 'SOUTH', 'WEST'];
     const currentIdx = directions.indexOf(state.direction);
     let nextIdx = dir === 'LEFT' ? currentIdx - 1 : currentIdx + 1;
-    if (nextIdx < 0) nextIdx = 3;
-    if (nextIdx > 3) nextIdx = 0;
-    
-    // Set subtle transition effect
-    if (ENABLE_GLITCH) {
-  setGlitchActive(true);
 
-  setTimeout(() => {
-    setGlitchActive(false);
-  }, 180);
-}
+    if (nextIdx < 0) nextIdx = directions.length - 1;
+    if (nextIdx >= directions.length) nextIdx = 0;
+
+    setState(prev => ({
+      ...prev,
+      direction: directions[nextIdx],
+    }));
+
+    if (ENABLE_GLITCH) {
+      setGlitchActive(true);
+      setTimeout(() => setGlitchActive(false), 180);
+    }
   };
 
   // --- Game Logic & Decoding ---
   const handleSolve = (answer: string) => {
-    const rawInput = answer.replace(/\s+/g, '').toUpperCase();
-    const correctAnswers = ["6-5-3", "CHOIEUNSEO", "JUSTICE", "20240514", "1324"];
-    
-   if (rawInput === correctAnswers[state.currentStageIdx]) {
-      if (state.solvedStages.includes(currentStage.id)) {
-  setMessage('이미 해결한 단서입니다.');
-  return;
-}
-      const stageKey = `stage${currentStage.id}_clear`;
-      const dialogue = DIALOGUES.find(d => d.trigger === stageKey);
-      
-      const newInventory = [...state.inventory, ...currentStage.reward];
-      const nextIdx = state.currentStageIdx + 1;
+    const objectId = state.inspectingObject;
 
-      setState(prev => ({
-        ...prev,
-        inventory: Array.from(new Set(newInventory)),
-        solvedStages: [...prev.solvedStages, currentStage.id],
-        activeDialogue: dialogue ? dialogue.line : null,
-        inspectingObject: null,
-      }));
+    if (!objectId) {
+      setMessage('조사 중인 단서가 없습니다.');
+      setTimeout(() => setMessage(''), 1500);
+      return;
+    }
 
-      setMessage('단서 매칭 완료. 기록의 실마리를 잠금 해제했습니다.');
-      setInput('');
-      
-      setTimeout(() => {
-        if (nextIdx >= STAGES.length) {
-          setView('ENDING_CHOICE');
-        } else {
-          setState(prev => ({ ...prev, currentStageIdx: nextIdx }));
-        }
-        setMessage('');
-      }, 2200);
-    } else {
+    const target = ANSWERS_BY_OBJECT[objectId];
+
+    if (!target) {
+      setMessage('이 오브젝트에는 입력 가능한 정답이 없습니다.');
+      setTimeout(() => setMessage(''), 1500);
+      return;
+    }
+
+    if (state.solvedStages.includes(target.stageId)) {
+      setMessage('이미 해결한 단서입니다.');
+      setTimeout(() => setMessage(''), 1500);
+      return;
+    }
+
+    const rawInput = normalizeAnswer(answer);
+    const correctAnswer = normalizeAnswer(target.answer);
+
+    if (rawInput !== correctAnswer) {
       setMessage('분석 실패: 단서가 일치하지 않습니다.');
       setTimeout(() => setMessage(''), 1500);
+      return;
     }
+
+    const solvedStage = STAGES.find(stage => stage.id === target.stageId);
+
+    if (!solvedStage) {
+      setMessage('스테이지 정보를 찾을 수 없습니다.');
+      setTimeout(() => setMessage(''), 1500);
+      return;
+    }
+
+    const stageKey = `stage${target.stageId}_clear`;
+    const dialogue = DIALOGUES.find(d => d.trigger === stageKey);
+    const solvedStageIds = Array.from(new Set([...state.solvedStages, target.stageId]));
+    const allSolved = STAGES.every(stage => solvedStageIds.includes(stage.id));
+
+    setState(prev => ({
+      ...prev,
+      inventory: Array.from(new Set([...prev.inventory, ...solvedStage.reward])),
+      solvedStages: Array.from(new Set([...prev.solvedStages, target.stageId])),
+      activeDialogue: dialogue ? dialogue.line : null,
+      inspectingObject: null,
+      currentStageIdx: Math.max(prev.currentStageIdx, target.stageId),
+    }));
+
+    setMessage('단서 매칭 완료. 기록의 실마리를 잠금 해제했습니다.');
+    setInput('');
+
+    setTimeout(() => {
+      if (allSolved) {
+        setView('ENDING_CHOICE');
+      }
+      setMessage('');
+    }, 2200);
   };
 
   const useCharacterSkill = () => {
