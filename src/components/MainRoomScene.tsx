@@ -517,7 +517,6 @@ export default function MainRoomScene({
 
   </div>
 )}
-                  </button>
                 </div>
               </div>
             </div>
