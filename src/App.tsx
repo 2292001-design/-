@@ -300,7 +300,7 @@ export default function App() {
           [ 진실을 마음속에 새기고 계속 조사하기 ]
         </button>
       </div>
-    </motion.div>
+  </div>
   );
 
   // 4. Object Interaction dialog with riddles & logic triggers (No direct answers!)
